@@ -1,0 +1,59 @@
+[build-system]
+requires = ["setuptools>=69"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "digikala-product-comparison"
+version = "0.1.0"
+description = "Evidence-grounded Digikala product-comparison pipeline"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "FlagEmbedding>=1.3,<2.0",
+    "faiss-cpu>=1.9,<2.0",
+    "numpy>=2.0,<3.0",
+    "openai>=2.0,<3.0",
+    "polars>=1.20,<2.0",
+    "pydantic>=2.0,<3.0",
+    "pyarrow>=18.0,<24.0",
+    "psutil>=6.0,<8.0",
+    "rapidfuzz>=3.0,<4.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0,<9.0",
+]
+
+[project.scripts]
+digikala-preprocess = "digikala_comparison.cli:preprocess_main"
+digikala-quality-report = "digikala_comparison.cli:quality_report_main"
+digikala-download-data = "digikala_comparison.cli:download_data_main"
+digikala-build-statistics = "digikala_comparison.cli:build_statistics_main"
+digikala-build-canonical-products = "digikala_comparison.cli:build_canonical_products_main"
+digikala-resolve-product = "digikala_comparison.cli:resolve_product_main"
+digikala-evaluate-resolution = "digikala_comparison.cli:evaluate_resolution_main"
+digikala-build-retrieval-corpus = "digikala_comparison.cli:build_retrieval_corpus_main"
+digikala-retrieve-bm25 = "digikala_comparison.cli:retrieve_bm25_main"
+digikala-evaluate-retrieval = "digikala_comparison.cli:evaluate_retrieval_main"
+digikala-build-dense-index = "digikala_comparison.cli:build_dense_index_main"
+digikala-retrieve-dense = "digikala_comparison.cli:retrieve_dense_main"
+digikala-evaluate-dense = "digikala_comparison.cli:evaluate_dense_main"
+digikala-retrieve-hybrid = "digikala_comparison.cli:retrieve_hybrid_main"
+digikala-evaluate-hybrid = "digikala_comparison.cli:evaluate_hybrid_main"
+digikala-retrieve-reranked = "digikala_comparison.cli:retrieve_reranked_main"
+digikala-evaluate-reranker = "digikala_comparison.cli:evaluate_reranker_main"
+digikala-retrieval-benchmark = "digikala_comparison.cli:retrieval_benchmark_main"
+digikala-retrieve-evidence = "digikala_comparison.cli:retrieve_evidence_main"
+digikala-compare-structured = "digikala_comparison.cli:compare_structured_main"
+digikala-generate-comparison = "digikala_comparison.cli:generate_comparison_main"
+digikala-list-llm-models = "digikala_comparison.cli:list_llm_models_main"
+digikala-validate-grounding = "digikala_comparison.cli:validate_grounding_main"
+digikala-evaluate-final = "digikala_comparison.cli:evaluate_final_main"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]
+
+[tool.setuptools.packages.find]
+where = ["src"]

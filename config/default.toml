@@ -1,0 +1,200 @@
+[dataset]
+# Pinned in the project brief. This project never downloads it automatically.
+repository = "RadeAI/Digikala_comments_products"
+revision = "89c3133b169c8d3793db8834f56f32fee33d9db0"
+source_url = "https://huggingface.co/datasets/RadeAI/Digikala_comments_products/tree/89c3133b169c8d3793db8834f56f32fee33d9db0"
+
+[paths]
+raw_products = "data/raw/digikala-products.csv"
+raw_comments = "data/raw/digikala-comments.csv"
+processed_products = "data/processed/products.parquet"
+processed_comments = "data/processed/comments.parquet"
+product_statistics = "data/processed/product_statistics.parquet"
+canonical_products = "data/processed/canonical_products.parquet"
+quality_report = "data/reports/data_quality_report.json"
+statistics_report = "data/reports/product_statistics_report.json"
+duplicate_conflict_report = "data/reports/duplicate_product_conflicts.json"
+resolution_validation_report = "data/reports/product_resolution_validation.json"
+retrieval_corpus = "data/processed/retrieval_reviews.parquet"
+retrieval_corpus_report = "data/reports/retrieval_corpus_report.json"
+retrieval_queries = "data/benchmarks/retrieval_queries.jsonl"
+retrieval_qrels = "data/benchmarks/retrieval_qrels.csv"
+retrieval_results = "data/experiments/bm25_ranked_results.parquet"
+retrieval_evaluation_report = "data/experiments/bm25_evaluation.json"
+dense_sorted_corpus = "data/processed/dense_retrieval_reviews_sorted.parquet"
+dense_index_root = "data/dense/bge_m3_faiss"
+dense_manifest = "data/dense/bge_m3_faiss/manifest.json"
+dense_product_ranges = "data/dense/bge_m3_faiss/product_ranges.parquet"
+dense_ranked_results = "data/experiments/bge_m3_dense_ranked_results.parquet"
+dense_evaluation_report = "data/experiments/bge_m3_dense_evaluation.json"
+dense_comparison_report = "data/experiments/bm25_vs_bge_m3.json"
+dense_failure_analysis = "data/experiments/bm25_vs_bge_m3_failure_analysis.json"
+dense_resource_report = "data/reports/bge_m3_resource_estimate.json"
+hybrid_splits = "data/benchmarks/retrieval_splits_v1.json"
+hybrid_tuning_report = "data/experiments/hybrid_rrf_tuning.json"
+hybrid_ranked_results = "data/experiments/hybrid_rrf_ranked_results.parquet"
+hybrid_evaluation_report = "data/experiments/bm25_dense_hybrid_evaluation.json"
+hybrid_analysis_report = "data/experiments/hybrid_rrf_query_analysis.json"
+hybrid_selection_report = "data/experiments/hybrid_production_selection.json"
+reranker_cache_root = "data/reranker/bge_reranker_v2_m3"
+reranker_resource_report = "data/reports/bge_reranker_v2_m3_resource.json"
+reranker_tuning_report = "data/experiments/bge_reranker_depth_tuning.json"
+reranker_ranked_results = "data/experiments/bm25_dense_hybrid_reranker_ranked_results.parquet"
+reranker_evaluation_report = "data/experiments/bm25_dense_hybrid_reranker_evaluation.json"
+reranker_analysis_report = "data/experiments/bge_reranker_query_analysis.json"
+reranker_failure_analysis = "data/experiments/bge_reranker_failure_analysis.json"
+reranker_selection_report = "data/experiments/retrieval_production_selection.json"
+frozen_development_queries = "data/benchmarks/frozen_retrieval_v1/development_queries.jsonl"
+frozen_development_qrels = "data/benchmarks/frozen_retrieval_v1/development_qrels.csv"
+frozen_test_queries = "data/benchmarks/frozen_retrieval_v1/test_queries.jsonl"
+frozen_test_qrels = "data/benchmarks/frozen_retrieval_v1/test_qrels.csv"
+retrieval_experiment_manifest = "data/experiments/retrieval_experiment_manifest_v1.json"
+retrieval_benchmark_markdown = "data/experiments/retrieval_benchmark_summary.md"
+generation_cache_root = "data/generation/cache"
+generation_trace_root = "data/generation/traces"
+generation_output_root = "data/generation/outputs"
+grounding_audit_root = "data/generation/grounding_audits"
+final_evaluation_root = "data/evaluations/final_v1"
+
+[runtime]
+random_seed = 42
+download_chunk_bytes = 1048576
+
+[normalization]
+unicode_form = "NFC"
+replace_arabic_yeh = true
+replace_arabic_kaf = true
+collapse_whitespace = true
+treat_string_nan_as_null = true
+
+[review_eligibility]
+# Eligibility dimensions are reported during Phase 2; canonical data is never filtered.
+require_nonempty_normalized_text = true
+minimum_normalized_text_length = 1
+require_buyer = false
+allowed_recommendation_status = ["recommended", "not_recommended", "no_idea"]
+minimum_helpfulness_votes = 1
+
+[resolution]
+# A result is auto-resolved only if its lexical score clears this threshold and
+# no distinct candidate is within ambiguity_score_margin.
+fuzzy_score_threshold = 90.0
+ambiguity_score_margin = 3.0
+max_fuzzy_candidates = 50
+
+[bm25]
+k1 = 1.2
+b = 0.75
+default_top_k = 10
+candidate_depth = 100
+minimum_normalized_text_length = 3
+
+[dense]
+# Pinned BGE-M3 model snapshot from the official model repository.
+model_id = "BAAI/bge-m3"
+model_revision = "5617a9f61b028005a4858fdac845db406aefb181"
+backend = "faiss.IndexFlatIP"
+device = "auto"
+batch_size = 4
+checkpoint_documents = 2048
+max_length = 512
+embedding_dimension = 1024
+normalize_embeddings = true
+use_fp16 = false
+product_index_cache_size = 32
+pilot_documents = 8
+
+[hybrid]
+# RRF only: BM25 and dense scores are intentionally not score-normalized or mixed.
+bm25_candidate_depth = 100
+dense_candidate_depth = 100
+rrf_k = 60
+final_top_k = 10
+tuning_rrf_k = [20, 40, 60, 80]
+minimum_ndcg_gain = 0.02
+maximum_warm_p95_multiplier = 2.0
+
+[reranker]
+# Pinned official BGE cross-encoder; no substitute model is used.
+model_id = "BAAI/bge-reranker-v2-m3"
+model_revision = "953dc6f6f85a1b2dbfca4c34a2796e7dde08d41e"
+device = "auto"
+batch_size = 4
+max_length = 512
+query_max_length = 64
+use_fp16 = false
+candidate_depths = [20, 50, 100]
+candidate_depth = 50
+final_top_k = 10
+model_weights_bytes = 2271071852
+minimum_available_ram_bytes = 6442450944
+bootstrap_iterations = 1000
+minimum_ndcg_gain = 0.02
+maximum_warm_p95_ms = 2000.0
+long_text_character_threshold = 500
+
+[comparison]
+# Full-population recommendation rates need this many known-status reviews per
+# product before a winner can be declared. Differences below five percentage
+# points are reported as inconclusive rather than as a practical advantage.
+minimum_percentage_denominator = 20
+practical_percentage_point_difference = 0.05
+# Product Rate was validated as a 0--100 snapshot score. Rate_cnt provides its
+# minimum support; the review-level rate is intentionally not compared because
+# its observed distribution includes outliers that invalidate a common scale.
+minimum_product_rate_count = 10
+practical_product_rate_point_difference = 2.0
+# Price fields are compared only as raw snapshot values in the same dataset;
+# their currency is intentionally not asserted. Five percent is the minimum
+# relative gap for a price winner.
+practical_price_relative_difference = 0.05
+# These apply only to qualitative Top-K evidence. Such evidence is never used
+# to calculate full-product recommendation percentages.
+minimum_retrieved_evidence_items = 3
+require_stable_field_metadata = true
+
+[generation]
+# Metis exposes an OpenAI-compatible Chat Completions API. The key is read at
+# request time from this environment variable and is never persisted here.
+provider = "metis_openai_compatible"
+# Verified through this account's `digikala-list-llm-models` output.
+# A compact, capable model for bounded structured Persian generation.
+model = "gpt-4.1-mini"
+api_key_environment_variable = "METIS_API_KEY"
+api_base_url = "https://api.metisai.ir/openai/v1"
+# Keep cost unknown until Metis pricing for the selected model is verified.
+cost_estimation_available = false
+temperature = 0.0
+max_output_tokens = 1200
+timeout_seconds = 30.0
+# USD per one million tokens; revise deliberately alongside prompt changes.
+input_token_cost_per_million_usd = 0.20
+output_token_cost_per_million_usd = 1.20
+prompt_version = "comparison-generation-v1"
+schema_version = "generated-comparison-answer-v1"
+max_evidence_items_per_set = 3
+max_evidence_characters_per_item = 400
+max_total_evidence_characters = 6000
+max_user_text_characters = 1000
+enable_cache = true
+persist_development_traces = false
+
+[grounding]
+validator_version = "grounding-validator-v1"
+# For interactive demos, omit a claim rejected by deterministic grounding.
+# The original answer and removal decision remain in the audit record.
+unsupported_claim_action = "remove_unsupported"
+# Permit only explicit numeric display rounding (for example 0.764 -> 0.764).
+numeric_absolute_tolerance = 0.0005
+minimum_review_lexical_overlap_tokens = 1
+max_regeneration_attempts = 1
+
+[final_evaluation]
+# Phase 12 never calls an API unless --with-llm is explicitly supplied.  This
+# keeps the reproducible default run inside the project cost budget.
+evaluation_version = "final-evaluation-v1"
+case_set_version = "persian-comparison-cases-v1"
+human_rubric_version = "human-answer-quality-v1"
+default_evidence_top_k = 3
+human_sample_size = 5
+max_llm_cases = 5
