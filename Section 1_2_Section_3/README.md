@@ -79,8 +79,6 @@ their evidence for human review.
 2. Make sure `validation_requestsSection1_2_Section_3.ipynb`, Part 1) is in the working directory.
 3. Run cells top to bottom. The first cell is a quick connectivity/auth check against the `/models` endpoint — run it first to confirm your key and see available models before running the full batch.
 
-> ⚠️ **Security note:** an earlier version of this notebook had a live API key hardcoded in two cells. If that key was ever shared or committed anywhere, revoke/rotate it in the Metis AI dashboard and switch to an environment variable as shown above.
-
 ---
 
 ## Notes & Limitations
