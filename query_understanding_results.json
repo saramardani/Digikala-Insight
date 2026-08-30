@@ -1,0 +1,74 @@
+[
+  {
+    "query": "یک کیف دستی زنانه میخوام که ارزون باشه",
+    "output": {
+      "product_type": "کیف دستی زنانه",
+      "price_max": 1000000,
+      "price_min": null,
+      "min_satisfaction": false,
+      "exclude_fake": true,
+      "semantic_query": "کیف دستی زنانه ارزان"
+    },
+    "success": true
+  },
+  {
+    "query": "لپ‌تاپ خوب زیر ۵۰ میلیون معرفی کن",
+    "output": {
+      "product_type": "لپ‌تاپ",
+      "price_max": 50000000,
+      "price_min": null,
+      "min_satisfaction": false,
+      "exclude_fake": true,
+      "semantic_query": "لپ‌تاپ مناسب با قیمت زیر ۵۰ میلیون"
+    },
+    "success": true
+  },
+  {
+    "query": "عطر زنانه با بو ملایم که نظرات خوب داشته باشه",
+    "output": {
+      "product_type": "عطر زنانه",
+      "price_max": null,
+      "price_min": null,
+      "min_satisfaction": true,
+      "exclude_fake": true,
+      "semantic_query": "عطر زنانه با بوی ملایم و نظرات مثبت"
+    },
+    "success": true
+  },
+  {
+    "query": "اسباب بازی آموزشی برای بچه ۳ ساله",
+    "output": {
+      "product_type": "اسباب بازی آموزشی",
+      "price_max": null,
+      "price_min": null,
+      "min_satisfaction": false,
+      "exclude_fake": true,
+      "semantic_query": "اسباب بازی آموزشی مناسب برای بچه ۳ ساله"
+    },
+    "success": true
+  },
+  {
+    "query": "گوشی موبایل ارزون قیمت با کیفیت",
+    "output": {
+      "product_type": "گوشی موبایل",
+      "price_max": 3000000,
+      "price_min": null,
+      "min_satisfaction": true,
+      "exclude_fake": true,
+      "semantic_query": "گوشی موبایل با قیمت مناسب و کیفیت خوب"
+    },
+    "success": true
+  },
+  {
+    "query": "لباس ورزشی مردانه راحت",
+    "output": {
+      "product_type": "لباس ورزشی مردانه",
+      "price_max": null,
+      "price_min": null,
+      "min_satisfaction": false,
+      "exclude_fake": true,
+      "semantic_query": "لباس ورزشی مردانه راحت"
+    },
+    "success": true
+  }
+]
