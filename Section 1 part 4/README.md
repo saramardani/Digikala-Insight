@@ -1,4 +1,4 @@
-# Digikala Category-Level Insights: Data Prep, LLM Analysis & Judge (Part 4)
+# Digikala Category-Level Insights: Data Prep, LLM Analysis & Judge (Part 4) 
 
 A three-notebook pipeline for category-manager-level analysis of Digikala
 reviews: a Kaggle notebook that prepares quantitative stats and text batches
