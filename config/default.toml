@@ -55,6 +55,8 @@ generation_trace_root = "data/generation/traces"
 generation_output_root = "data/generation/outputs"
 grounding_audit_root = "data/generation/grounding_audits"
 final_evaluation_root = "data/evaluations/final_v1"
+# New staged evaluation artifacts.  final_v1 remains immutable for audit.
+final_evaluation_v2_root = "data/evaluations/final_v2"
 
 [runtime]
 random_seed = 42
@@ -198,3 +200,11 @@ human_rubric_version = "human-answer-quality-v1"
 default_evidence_top_k = 3
 human_sample_size = 5
 max_llm_cases = 5
+
+[final_evaluation_v2]
+# The v2 set covers search, review-QA, product comparison, manager analysis,
+# and prediction reporting in separate reproducible phases.
+evaluation_version = "final-system-evaluation-v2"
+case_schema_version = "final-evaluation-case-v2"
+manifest_schema_version = "final-evaluation-manifest-v2"
+human_rubric_version = "human-answer-quality-v2"

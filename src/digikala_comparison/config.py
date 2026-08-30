@@ -66,6 +66,7 @@ class PathSettings:
     generation_output_root: Path | None = None
     grounding_audit_root: Path | None = None
     final_evaluation_root: Path | None = None
+    final_evaluation_v2_root: Path | None = None
 
 
 @dataclass(frozen=True)
@@ -246,6 +247,28 @@ class FinalEvaluationSettings:
 
 
 @dataclass(frozen=True)
+class FinalEvaluationV2Settings:
+    """Version identifiers for the staged final-system evaluation v2."""
+
+    evaluation_version: str = "final-system-evaluation-v2"
+    case_schema_version: str = "final-evaluation-case-v2"
+    manifest_schema_version: str = "final-evaluation-manifest-v2"
+    human_rubric_version: str = "human-answer-quality-v2"
+
+    def __post_init__(self) -> None:
+        if not all(
+            value.strip()
+            for value in (
+                self.evaluation_version,
+                self.case_schema_version,
+                self.manifest_schema_version,
+                self.human_rubric_version,
+            )
+        ):
+            raise ValueError("final evaluation v2 version identifiers must be non-empty")
+
+
+@dataclass(frozen=True)
 class NormalizationSettings:
     unicode_form: str
     replace_arabic_yeh: bool
@@ -280,6 +303,7 @@ class Settings:
     generation: GenerationSettings = field(default_factory=GenerationSettings)
     grounding: GroundingSettings = field(default_factory=GroundingSettings)
     final_evaluation: FinalEvaluationSettings = field(default_factory=FinalEvaluationSettings)
+    final_evaluation_v2: FinalEvaluationV2Settings = field(default_factory=FinalEvaluationV2Settings)
 
     @classmethod
     def from_toml(cls, config_path: str | Path) -> "Settings":
@@ -362,6 +386,7 @@ class Settings:
                 generation_output_root=resolve_path(paths.get("generation_output_root", "data/generation/outputs")),
                 grounding_audit_root=resolve_path(paths.get("grounding_audit_root", "data/generation/grounding_audits")),
                 final_evaluation_root=resolve_path(paths.get("final_evaluation_root", "data/evaluations/final_v1")),
+                final_evaluation_v2_root=resolve_path(paths.get("final_evaluation_v2_root", "data/evaluations/final_v2")),
             ),
             random_seed=int(raw["runtime"]["random_seed"]),
             normalization=NormalizationSettings(**normalization),
@@ -402,4 +427,5 @@ class Settings:
             generation=GenerationSettings(**raw.get("generation", {})),
             grounding=GroundingSettings(**raw.get("grounding", {})),
             final_evaluation=FinalEvaluationSettings(**raw.get("final_evaluation", {})),
+            final_evaluation_v2=FinalEvaluationV2Settings(**raw.get("final_evaluation_v2", {})),
         )

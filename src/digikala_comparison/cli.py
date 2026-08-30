@@ -49,6 +49,13 @@ from .grounding import (
     GroundingAuditStore,
 )
 from .final_evaluation import run_final_evaluation
+from .final_evaluation_v2 import initialize_final_evaluation_v2
+from .product_search_evaluation import evaluate_product_search, freeze_product_search_cases
+from .review_qa_evaluation import evaluate_review_qa_evidence, freeze_review_qa_cases
+from .comparison_evaluation_v2 import evaluate_comparisons, freeze_comparison_cases
+from .manager_analysis_evaluation import evaluate_manager_analysis, freeze_manager_analysis_cases
+from .final_report_v2 import build_final_report_v2
+from .human_evaluation import aggregate_human_evaluation_bundle
 
 
 def _parser(command: str) -> argparse.ArgumentParser:
@@ -725,6 +732,147 @@ def evaluate_final_main(argv: Sequence[str] | None = None) -> int:
         return 2
     print(json.dumps(result, ensure_ascii=False, indent=2))
     return 0
+
+
+def initialize_final_evaluation_v2_main(argv: Sequence[str] | None = None) -> int:
+    """Initialize the immutable, staged final-evaluation v2 workspace."""
+    parser = _parser("initialize-final-evaluation-v2")
+    parser.add_argument("--output-root", type=Path, help="Artifact directory; defaults to [paths].final_evaluation_v2_root.")
+    args = parser.parse_args(argv)
+    try:
+        paths = initialize_final_evaluation_v2(Settings.from_toml(args.config), output_root=args.output_root)
+    except (FileNotFoundError, OSError, RuntimeError, ValueError, json.JSONDecodeError) as error:
+        print(f"error: {error}", file=sys.stderr)
+        return 2
+    print(json.dumps({name: str(path) for name, path in paths.items()}, ensure_ascii=False, indent=2))
+    return 0
+
+
+def freeze_product_search_evaluation_main(argv: Sequence[str] | None = None) -> int:
+    parser = _parser("freeze-product-search-evaluation")
+    parser.add_argument("--output-root", type=Path, help="Final-evaluation v2 artifact directory.")
+    args = parser.parse_args(argv)
+    try:
+        path = freeze_product_search_cases(Settings.from_toml(args.config), output_root=args.output_root)
+    except (FileNotFoundError, OSError, RuntimeError, ValueError, json.JSONDecodeError) as error:
+        print(f"error: {error}", file=sys.stderr)
+        return 2
+    print(json.dumps({"case_set": str(path), "status": "product_search_cases_frozen"}, ensure_ascii=False, indent=2))
+    return 0
+
+
+def evaluate_product_search_main(argv: Sequence[str] | None = None) -> int:
+    parser = _parser("evaluate-product-search")
+    parser.add_argument("--output-root", type=Path, help="Final-evaluation v2 artifact directory.")
+    args = parser.parse_args(argv)
+    try:
+        result = evaluate_product_search(Settings.from_toml(args.config), output_root=args.output_root)
+    except (FileNotFoundError, OSError, RuntimeError, ValueError, json.JSONDecodeError) as error:
+        print(f"error: {error}", file=sys.stderr)
+        return 2
+    print(json.dumps(result, ensure_ascii=False, indent=2))
+    return 0
+
+
+def freeze_review_qa_evaluation_main(argv: Sequence[str] | None = None) -> int:
+    parser = _parser("freeze-review-qa-evaluation")
+    parser.add_argument("--output-root", type=Path, help="Final-evaluation v2 artifact directory.")
+    args = parser.parse_args(argv)
+    try:
+        path = freeze_review_qa_cases(Settings.from_toml(args.config), output_root=args.output_root)
+    except (FileNotFoundError, OSError, RuntimeError, ValueError, json.JSONDecodeError) as error:
+        print(f"error: {error}", file=sys.stderr)
+        return 2
+    print(json.dumps({"case_set": str(path), "status": "review_qa_cases_frozen"}, ensure_ascii=False, indent=2))
+    return 0
+
+
+def evaluate_review_qa_main(argv: Sequence[str] | None = None) -> int:
+    parser = _parser("evaluate-review-qa")
+    parser.add_argument("--output-root", type=Path, help="Final-evaluation v2 artifact directory.")
+    parser.add_argument("--top-k", type=int, default=5, help="Evidence depth; must be positive.")
+    args = parser.parse_args(argv)
+    try:
+        result = evaluate_review_qa_evidence(Settings.from_toml(args.config), output_root=args.output_root, top_k=args.top_k)
+    except (FileNotFoundError, OSError, RuntimeError, ValueError, json.JSONDecodeError) as error:
+        print(f"error: {error}", file=sys.stderr)
+        return 2
+    print(json.dumps(result, ensure_ascii=False, indent=2))
+    return 0
+
+
+def freeze_comparison_evaluation_main(argv: Sequence[str] | None = None) -> int:
+    parser = _parser("freeze-comparison-evaluation")
+    parser.add_argument("--output-root", type=Path)
+    args = parser.parse_args(argv)
+    try:
+        path = freeze_comparison_cases(Settings.from_toml(args.config), output_root=args.output_root)
+    except (FileNotFoundError, OSError, RuntimeError, ValueError, json.JSONDecodeError) as error:
+        print(f"error: {error}", file=sys.stderr)
+        return 2
+    print(json.dumps({"case_set": str(path), "status": "comparison_cases_frozen"}, ensure_ascii=False, indent=2))
+    return 0
+
+
+def evaluate_comparison_evaluation_main(argv: Sequence[str] | None = None) -> int:
+    parser = _parser("evaluate-comparison")
+    parser.add_argument("--output-root", type=Path)
+    parser.add_argument("--evidence-top-k", type=int, default=3)
+    args = parser.parse_args(argv)
+    try:
+        result = evaluate_comparisons(Settings.from_toml(args.config), output_root=args.output_root, evidence_top_k=args.evidence_top_k)
+    except (FileNotFoundError, OSError, RuntimeError, ValueError, json.JSONDecodeError) as error:
+        print(f"error: {error}", file=sys.stderr)
+        return 2
+    print(json.dumps(result, ensure_ascii=False, indent=2))
+    return 0
+
+
+def freeze_manager_analysis_evaluation_main(argv: Sequence[str] | None = None) -> int:
+    parser = _parser("freeze-manager-analysis-evaluation"); parser.add_argument("--output-root", type=Path)
+    args = parser.parse_args(argv)
+    try: path = freeze_manager_analysis_cases(Settings.from_toml(args.config), output_root=args.output_root)
+    except (FileNotFoundError, OSError, RuntimeError, ValueError, json.JSONDecodeError) as error:
+        print(f"error: {error}", file=sys.stderr); return 2
+    print(json.dumps({"case_set": str(path), "status": "manager_analysis_cases_frozen"}, ensure_ascii=False, indent=2)); return 0
+
+
+def evaluate_manager_analysis_main(argv: Sequence[str] | None = None) -> int:
+    parser = _parser("evaluate-manager-analysis"); parser.add_argument("--output-root", type=Path)
+    args = parser.parse_args(argv)
+    try: result = evaluate_manager_analysis(Settings.from_toml(args.config), output_root=args.output_root)
+    except (FileNotFoundError, OSError, RuntimeError, ValueError, json.JSONDecodeError) as error:
+        print(f"error: {error}", file=sys.stderr); return 2
+    print(json.dumps(result, ensure_ascii=False, indent=2)); return 0
+
+
+def report_final_evaluation_v2_main(argv: Sequence[str] | None = None) -> int:
+    if hasattr(sys.stdout, "reconfigure"):
+        sys.stdout.reconfigure(encoding="utf-8")
+    parser = _parser("report-final-evaluation-v2")
+    parser.add_argument("--output-root", type=Path)
+    parser.add_argument("--prediction-metrics", type=Path, help="Held-out prediction metrics JSON containing macro_f1.")
+    args = parser.parse_args(argv)
+    try: result = build_final_report_v2(Settings.from_toml(args.config), output_root=args.output_root, prediction_metrics_path=args.prediction_metrics)
+    except (FileNotFoundError, OSError, RuntimeError, ValueError, json.JSONDecodeError) as error:
+        print(f"error: {error}", file=sys.stderr); return 2
+    print(json.dumps(result, ensure_ascii=False, indent=2)); return 0
+
+
+def aggregate_human_evaluation_main(argv: Sequence[str] | None = None) -> int:
+    if hasattr(sys.stdout, "reconfigure"):
+        sys.stdout.reconfigure(encoding="utf-8")
+    parser = _parser("aggregate-human-evaluation")
+    parser.add_argument("--output-root", type=Path)
+    args = parser.parse_args(argv)
+    try:
+        root = initialize_final_evaluation_v2(Settings.from_toml(args.config), output_root=args.output_root)["root"]
+        result = aggregate_human_evaluation_bundle(root)
+        output = root / "human_evaluation_metrics.json"
+        output.write_text(json.dumps(result, ensure_ascii=False, indent=2), encoding="utf-8")
+    except (FileNotFoundError, OSError, ValueError, json.JSONDecodeError) as error:
+        print(f"error: {error}", file=sys.stderr); return 2
+    print(json.dumps({"metrics": result, "path": str(output)}, ensure_ascii=False, indent=2)); return 0
 
 
 def _key_value_arguments(values: Sequence[str], option: str) -> dict[str, str]:

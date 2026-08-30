@@ -50,6 +50,17 @@ digikala-generate-comparison = "digikala_comparison.cli:generate_comparison_main
 digikala-list-llm-models = "digikala_comparison.cli:list_llm_models_main"
 digikala-validate-grounding = "digikala_comparison.cli:validate_grounding_main"
 digikala-evaluate-final = "digikala_comparison.cli:evaluate_final_main"
+digikala-initialize-final-evaluation-v2 = "digikala_comparison.cli:initialize_final_evaluation_v2_main"
+digikala-freeze-product-search-evaluation = "digikala_comparison.cli:freeze_product_search_evaluation_main"
+digikala-evaluate-product-search = "digikala_comparison.cli:evaluate_product_search_main"
+digikala-freeze-review-qa-evaluation = "digikala_comparison.cli:freeze_review_qa_evaluation_main"
+digikala-evaluate-review-qa = "digikala_comparison.cli:evaluate_review_qa_main"
+digikala-freeze-comparison-evaluation = "digikala_comparison.cli:freeze_comparison_evaluation_main"
+digikala-evaluate-comparison = "digikala_comparison.cli:evaluate_comparison_evaluation_main"
+digikala-freeze-manager-analysis-evaluation = "digikala_comparison.cli:freeze_manager_analysis_evaluation_main"
+digikala-evaluate-manager-analysis = "digikala_comparison.cli:evaluate_manager_analysis_main"
+digikala-report-final-evaluation-v2 = "digikala_comparison.cli:report_final_evaluation_v2_main"
+digikala-aggregate-human-evaluation = "digikala_comparison.cli:aggregate_human_evaluation_main"
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
